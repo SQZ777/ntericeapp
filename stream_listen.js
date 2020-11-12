@@ -8,18 +8,18 @@ const client = new Discord.Client();
 var channel_notify_dict = {
     'morgantang': {
         status: 'close',
-        notify_time: null,
-        close_time: null
+        notify_time: '',
+        close_time: ''
     },
     'attackfromtaiwan': {
         status: 'close',
-        notify_time: null,
-        close_time: null
+        notify_time: '',
+        close_time: ''
     },
     'hsiny0903': {
         status: 'close',
-        notify_time: null,
-        close_time: null
+        notify_time: '',
+        close_time: ''
     }
 }
 
@@ -38,12 +38,12 @@ client.on('ready', async () => {
             } else {
                 now_time = new Date()
 
-                if (channel_notify_dict[channel_name].notify_time === null) {
+                if (channel_notify_dict[channel_name].notify_time === "") {
                     client.channels.cache.get("776035789108543528").send(`${channel_name} 開台啦!`);
                 } else {
                     // image 320x180
                     clostime_diff_with_notifytime = Math.abs(channel_notify_dict[channel_name].close_time - channel_notify_dict[channel_name].notify_time) / 1000 / 60
-                    if (clostime_diff_with_notifytime >= 120 && channel_notify_dict[channel_name].close_time !== null) {
+                    if (clostime_diff_with_notifytime >= 120 && channel_notify_dict[channel_name].close_time !== "") {
                         client.channels.cache.get("776035789108543528").send(`${channel_name} 開台啦!RRRRRRRRRRRR`);
                     }
                 }
