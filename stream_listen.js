@@ -29,7 +29,6 @@ client.on('ready', async () => {
     setInterval(async () => {
         for (const channel_name in channel_notify_dict) {
             var channel_status_resp = await get_channel_status(channel_name)
-            console.log(channel_status_resp)
             if (channel_status_resp === undefined) {
                 if (channel_notify_dict[channel_name].status === 'open') {
                     channel_notify_dict[channel_name].close_time = new Date()
