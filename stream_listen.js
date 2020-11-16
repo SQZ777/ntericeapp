@@ -1,4 +1,17 @@
 require('dotenv').config();
+var http = require('http'); // 1 - 載入 Node.js 原生模組 http
+ 
+var server = http.createServer(function (req, res) {   // 2 - 建立server
+    if(req.url=='/'){
+        res.writeHead(200,{'Content-Type':'text/html'});
+        res.write('this app is alive');
+        res.end();
+    }
+});
+ 
+server.listen(80); //3 - 進入此網站的監聽 port, 就是 localhost:xxxx 的 xxxx
+ 
+console.log('Node.js web server at port 5000 is running..')
 
 const {
     getRequest
