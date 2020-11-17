@@ -3,14 +3,19 @@ const http = require('http'); // 1 - 載入 Node.js 原生模組 http
 
 const PORT = process.env.PORT || 3000
 http.createServer(function (req, res) {
-    res.writeHead(200, {'Content-Type': 'text/plain'});
+    res.writeHead(200, {
+        'Content-Type': 'text/plain'
+    });
     res.end('Hello World!');
-  }).listen(PORT);
- 
+}).listen(PORT);
+
 
 const {
     getRequest
 } = require('./lib/request');
+const {
+    request_to_myself
+} = require('./lib/request_myself')
 const Discord = require('discord.js');
 const client = new Discord.Client();
 var channel_notify_dict = {
@@ -60,6 +65,10 @@ client.on('ready', async () => {
         }
     }, 3000);
 });
+
+setInterval(() => {
+    request_to_myself()
+}, 1200000)
 
 client.on('message', msg => {
     if (msg.content === 'ping') {
