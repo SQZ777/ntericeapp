@@ -9,9 +9,10 @@ const server = http.createServer(function (req, res) {   // 2 - 建立server
     }
 });
 
+const host = process.env.host
 const port = process.env.port || 3000
-server.listen(port, '127.0.0.1', ()=>{
-    console.log(`Server running at http://127.0.0.1:3000/`);
+server.listen(port, host, ()=>{
+    console.log(`Server running at https://${host}:${port}/`);
 });
  
 
