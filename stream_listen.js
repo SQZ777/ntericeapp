@@ -9,7 +9,7 @@ var server = http.createServer(function (req, res) {   // 2 - 建立server
     }
 });
  
-server.listen(80); //3 - 進入此網站的監聽 port, 就是 localhost:xxxx 的 xxxx
+server.listen(8877); //3 - 進入此網站的監聽 port, 就是 localhost:xxxx 的 xxxx
  
 console.log('Node.js web server at port 5000 is running..')
 
