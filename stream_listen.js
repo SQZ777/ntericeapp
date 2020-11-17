@@ -9,7 +9,7 @@ var server = http.createServer(function (req, res) {   // 2 - 建立server
     }
 });
 
-var port = precess.env.port || 3000
+const port = process.env.port || 3000
 server.listen(port, '127.0.0.1', ()=>{
     console.log(`Server running at http://127.0.0.1:3000/`);
 });
