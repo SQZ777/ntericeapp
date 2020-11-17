@@ -68,7 +68,7 @@ client.on('ready', async () => {
 
 setInterval(() => {
     request_to_myself()
-}, 1200000)
+}, 60000)
 
 client.on('message', msg => {
     if (msg.content === 'ping') {
