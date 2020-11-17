@@ -85,4 +85,4 @@ async function get_channel_status(channel_name) {
     return resp.body.data[0];
 }
 
-client.login(process.env.discordToken);
+// client.login(process.env.discordToken);
