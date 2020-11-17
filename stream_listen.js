@@ -1,7 +1,7 @@
 require('dotenv').config();
-var http = require('http'); // 1 - 載入 Node.js 原生模組 http
+const http = require('http'); // 1 - 載入 Node.js 原生模組 http
  
-var server = http.createServer(function (req, res) {   // 2 - 建立server
+const server = http.createServer(function (req, res) {   // 2 - 建立server
     if(req.url=='/'){
         res.writeHead(200,{'Content-Type':'text/html'});
         res.write('this app is alive');
