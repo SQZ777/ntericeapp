@@ -1,16 +1,11 @@
 require('dotenv').config();
 const http = require('http'); // 1 - 載入 Node.js 原生模組 http
- 
-const server = http.createServer(function (req, res) {   // 2 - 建立server
-    if(req.url=='/'){
-        res.writeHead(200,{'Content-Type':'text/html'});
-        res.write('this app is alive');
-        res.end();
-    }
-});
 
-const port = process.env.port || 3000
-server.listen(port)
+const PORT = process.env.port || 3000
+http.createServer(function (req, res) {
+    res.writeHead(200, {'Content-Type': 'text/plain'});
+    res.end('Hello World!');
+  }).listen(PORT);
  
 
 // const {
