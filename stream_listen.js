@@ -32,7 +32,7 @@ client.on('ready', async () => {
                 let diff_time = Math.abs(streamer.close_time - streamer.notify_time) / 1000 / 60;
                 await streamer_services.update_streamer_status(streamer.name, 'open');
                 if (diff_time >= 60) { // image 320x180
-                    client.channels.cache.get("776035789108543528").send(`${channel} 開台啦!`);
+                    client.channels.cache.get("776035789108543528").send(`${streamer.name} 開台啦!`);
                     streamer_services.update_streamer_notify_time(channel);
                 }
             } else if (streamer.status == 'open' && channel_status_resp === undefined) {
@@ -49,7 +49,7 @@ setInterval(() => {
 
 client.on('message', msg => {
     if (msg.content === 'ping') {
-        msg.reply('pong');
+        msg.reply('pong pong');
     }
 });
 
