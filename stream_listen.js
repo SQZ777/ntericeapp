@@ -40,7 +40,7 @@ client.on('ready', async () => {
                 await streamer_services.update_streamer_close_time(channel);
             }
         }
-    )}, 3000);
+    )}, 15000);
 });
 
 setInterval(() => {
