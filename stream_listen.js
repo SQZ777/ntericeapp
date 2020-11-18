@@ -24,22 +24,23 @@ client.on('ready', async () => {
     console.log(`Logged in as ${client.user.tag}!`);
     // client.channels.cache.get("776035789108543528").send(`${client.user.tag} 前來報到`);
     setInterval(async () => {
-        for (const channel in channel_names) {
-            let streamer_status = await streamer_services.get_streamer_status(channel);
+        channel_names.forEach(async channel => {
+            let streamer = await streamer_services.get_streamer(channel);
             let channel_status_resp = await twitch_lib.get_channel_status(channel);
-            if (streamer_status.status == 'close' && channel_status_resp !== undefined) {
-                let diff_time = Math.abs(streamer_status.close_time - streamer_status.notify_time) / 1000 / 60;
-                await streamer_services.update_streamer_status(streamer_status.name, 'open');
+            console.log(streamer)
+            if (streamer.status == 'close' && channel_status_resp !== undefined) {
+                let diff_time = Math.abs(streamer.close_time - streamer.notify_time) / 1000 / 60;
+                await streamer_services.update_streamer_status(streamer.name, 'open');
                 if (diff_time >= 60) { // image 320x180
                     client.channels.cache.get("776035789108543528").send(`${channel} 開台啦!`);
                     streamer_services.update_streamer_notify_time(channel);
                 }
-            } else if (streamer_status.status == 'open' && channel_status_resp === undefined) {
-                await streamer_services.update_streamer_status(streamer_status.name, 'close')
+            } else if (streamer.status == 'open' && channel_status_resp === undefined) {
+                await streamer_services.update_streamer_status(streamer.name, 'close')
                 await streamer_services.update_streamer_close_time(channel);
             }
         }
-    }, 3000);
+    )}, 3000);
 });
 
 setInterval(() => {
