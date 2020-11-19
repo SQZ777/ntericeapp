@@ -49,7 +49,7 @@ setInterval(() => {
 
 client.on('message', msg => {
     if (msg.content === 'ping') {
-        msg.reply('pong');
+        msg.reply('pong pong');
     }
 });
 
