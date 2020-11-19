@@ -27,30 +27,48 @@ client.on('ready', async () => {
         channel_names.forEach(async channel => {
             let streamer = await streamer_services.get_streamer(channel);
             let channel_status_resp = await twitch_lib.get_channel_status(channel);
-            console.log(streamer)
             if (streamer.status == 'close' && channel_status_resp !== undefined) {
+                let twitch_user = await twitch_lib.get_user(channel_status_resp.user_id);
                 let diff_time = Math.abs(streamer.close_time - streamer.notify_time) / 1000 / 60;
-                let diff_time_now = Math.abs(new Date - streamer.close_time) / 1000 / 60;
                 await streamer_services.update_streamer_status(streamer.name, 'open');
-                if (diff_time >= 60) { // image 320x180
-                    client.channels.cache.get("776035789108543528").send(`${streamer.name} 開台啦!`);
-                    streamer_services.update_streamer_notify_time(channel);
+                if (diff_time >= 60) {
+                    await client.channels.cache.get("775907977101180938").send(`HI ALL!!! ${streamer.name} 開台啦!`);
+                    await client.channels.cache.get("775907977101180938").send(get_embded(channel_status_resp, twitch_user));
+                    await streamer_services.update_streamer_notify_time(channel);
                 }
             } else if (streamer.status == 'open' && channel_status_resp === undefined) {
-                await streamer_services.update_streamer_status(streamer.name, 'close')
+                await streamer_services.update_streamer_status(streamer.name, 'close');
                 await streamer_services.update_streamer_close_time(channel);
             }
         }
-    )}, 15000);
+        )
+    }, 15000);
 });
+
+function get_embded(streamer_channel, user) {
+    return new Discord.MessageEmbed()
+        .setColor('#0099ff')
+        .setTitle(streamer_channel.title)
+        .setURL(`https://www.twitch.tv/${user.login}`)
+        .setAuthor(user.display_name, user.profile_image_url, `https://www.twitch.tv/${user.login}`)
+        .setThumbnail(user.profile_image_url)
+        .addField('Game', streamer_channel.game_name, true)
+        .setImage(streamer_channel.thumbnail_url.replace("{width}", 320).replace("{height}", 180))
+        .setTimestamp()
+}
 
 setInterval(() => {
     request_to_myself()
 }, 60000)
 
-client.on('message', msg => {
+client.on('message', async msg => {
     if (msg.content === 'ping') {
         msg.reply('pong pong');
+        streamer_channel = await twitch_lib.get_channel_status('attackfromtaiwan')
+        if (streamer_channe !== undefined) {
+            user = await twitch_lib.get_user(streamer_channel.user_id);
+            client.channels.cache.get("776035789108543528").send(get_embded(streamer_channel, user));
+        }
     }
 });
 
