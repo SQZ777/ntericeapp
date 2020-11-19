@@ -64,7 +64,7 @@ client.on('message', async msg => {
     if (msg.content === 'ping') {
         msg.reply('pong pong');
         streamer_channel = await twitch_lib.get_channel_status('attackfromtaiwan')
-        if (streamer_channe !== undefined) {
+        if (streamer_channel !== undefined) {
             user = await twitch_lib.get_user(streamer_channel.user_id);
             client.channels.cache.get("776035789108543528").send(get_embded(streamer_channel, user));
         }
