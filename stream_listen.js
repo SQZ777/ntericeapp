@@ -22,7 +22,6 @@ var channel_names = ['MorganTang', 'AttackFromTaiwan', 'hsiny0903']
 
 client.on('ready', async () => {
     console.log(`Logged in as ${client.user.tag}!`);
-    // client.channels.cache.get("776035789108543528").send(`${client.user.tag} 前來報到`);
     setInterval(async () => {
         channel_names.forEach(async channel => {
             let streamer = await streamer_services.get_streamer(channel);
@@ -53,7 +52,7 @@ function get_embded(streamer_channel, user) {
         .setAuthor(user.display_name, user.profile_image_url, `https://www.twitch.tv/${user.login}`)
         .setThumbnail(user.profile_image_url)
         .addField('Game', streamer_channel.game_name, true)
-        .setImage(streamer_channel.thumbnail_url.replace("{width}", 320).replace("{height}", 180))
+        .setImage(streamer_channel.thumbnail_url.replace("{width}", 480).replace("{height}", 240))
         .setTimestamp()
 }
 
