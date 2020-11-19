@@ -30,6 +30,7 @@ client.on('ready', async () => {
             console.log(streamer)
             if (streamer.status == 'close' && channel_status_resp !== undefined) {
                 let diff_time = Math.abs(streamer.close_time - streamer.notify_time) / 1000 / 60;
+                let diff_time_now = Math.abs(new Date - streamer.close_time) / 1000 / 60;
                 await streamer_services.update_streamer_status(streamer.name, 'open');
                 if (diff_time >= 60) { // image 320x180
                     client.channels.cache.get("776035789108543528").send(`${streamer.name} 開台啦!`);
