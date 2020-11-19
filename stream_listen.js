@@ -37,7 +37,7 @@ client.on('ready', async () => {
                     streamer_services.update_streamer_notify_time(channel);
                 }
             } else if (streamer.status == 'open' && channel_status_resp === undefined) {
-                await streamer_services.update_streamer_status(streamer.name, 'close')
+                await streamer_services.update_streamer_status(streamer.name, 'close');
                 await streamer_services.update_streamer_close_time(channel);
             }
         }
