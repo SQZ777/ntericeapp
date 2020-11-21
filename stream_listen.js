@@ -28,9 +28,9 @@ client.on('ready', async () => {
             let channel_status_resp = await twitch_lib.get_channel_status(channel);
             if (streamer.status == 'close' && channel_status_resp !== undefined) {
                 let twitch_user = await twitch_lib.get_user(channel_status_resp.user_id);
-                let diff_time = Math.abs(streamer.close_time - streamer.notify_time) / 1000 / 60;
+                let diff_time_now = Math.abs(new Date - streamer.close_time) / 1000 / 60;
                 await streamer_services.update_streamer_status(streamer.name, 'open');
-                if (diff_time >= 60) {
+                if (diff_time_now >= 60) {
                     await client.channels.cache.get("775907977101180938").send(`HI ALL!!! ${streamer.name} 開台啦!`);
                     await client.channels.cache.get("775907977101180938").send(get_embded(channel_status_resp, twitch_user));
                     await streamer_services.update_streamer_notify_time(channel);
