@@ -42,7 +42,7 @@ client.on('ready', async () => {
             }
 
             if(await igotallday_service.is_video_latest(new_video.videoId)){
-                await client.channels.cache.get("776035789108543528").send(get_igotallday_embded(new_video));
+                await client.channels.cache.get("775905509374558208").send(get_igotallday_embded(new_video));
                 let current_video_id = await igotallday_service.get_current_video_id()
                 await igotallday_service.update_latest_video(current_video_id, new_video.videoId);
             }
