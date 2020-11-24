@@ -66,10 +66,10 @@ function get_streamer_embded(streamer_channel, user) {
 
 function get_igotallday_embded(video) {
     return new Discord.MessageEmbed()
-        .setColor('#0099ff')
+        .setColor('#ff001a')
         .setTitle(video.title.runs[0].text)
         .setURL(`https://www.youtube.com/watch?v=${video.videoId}`)
-        .setAuthor("反正我很閒", "https://yt3.ggpht.com/ytc/AAUvwngTztH-bT1CgpL9FwQWS1Mco0MFjXyu2zuNGnKg=s88-c-k-c0x00ffffff-no-rj", `https://www.youtube.com/watch?v=${video.videoId}`)
+        .setAuthor("🚨🚨🚨 一級警報!! 🚨🚨🚨 反正我很閒", "https://yt3.ggpht.com/ytc/AAUvwngTztH-bT1CgpL9FwQWS1Mco0MFjXyu2zuNGnKg=s88-c-k-c0x00ffffff-no-rj", `https://www.youtube.com/watch?v=${video.videoId}`)
         .setThumbnail(video.thumbnail.thumbnails[3].url)
         .setImage(video.thumbnail.thumbnails[3].url)
         .setTimestamp()
