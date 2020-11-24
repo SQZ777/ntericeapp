@@ -40,7 +40,7 @@ client.on('ready', async () => {
                 await streamer_services.update_streamer_status(streamer.name, 'close');
                 await streamer_services.update_streamer_close_time(channel);
             }
-
+            let new_video = await igotallday_service.get_newest_video();
             if(await igotallday_service.is_video_latest(new_video.videoId)){
                 await client.channels.cache.get("775905509374558208").send(get_igotallday_embded(new_video));
                 let current_video_id = await igotallday_service.get_current_video_id()
