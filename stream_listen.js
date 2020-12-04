@@ -19,7 +19,7 @@ const {
 const streamer_services = require('./lib/streamer_services')
 const Discord = require('discord.js');
 const client = new Discord.Client();
-var channel_names = ['MorganTang', 'thisiceisfromtaiwan', 'hsiny0903']
+var channel_names = ['MorganTang', 'thisiceisfromtaiwan', 'hsiny0903', 'defponytail']
 
 client.on('ready', async () => {
     console.log(`Logged in as ${client.user.tag}!`);
