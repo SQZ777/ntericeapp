@@ -1,10 +1,10 @@
 require('dotenv').config();
 const igotallday_service = require('./lib/igotallday_youtube');
-const twitch_lib = require('./lib/twitch_lib')
-const streamer_services = require('./lib/streamer_services')
+const twitch_lib = require('./lib/twitch_lib');
+const streamer_services = require('./lib/streamer_services');
 const Discord = require('discord.js');
 const client = new Discord.Client();
-var channel_names = ['MorganTang', 'thisiceisfromtaiwan', 'hsiny0903', 'defponytail']
+var channel_names = ['MorganTang', 'thisiceisfromtaiwan', 'hsiny0903', 'defponytail'];
 
 
 const http = require('http'); // 1 - 載入 Node.js 原生模組 http
@@ -20,7 +20,7 @@ http.createServer(function (req, res) {
 
 setInterval(()=>{
     request_to_myself()
-},600000)
+},1000)
 
 client.on('ready', async () => {
     console.log(`Logged in as ${client.user.tag}!`);
