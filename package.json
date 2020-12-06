@@ -3,8 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "stream_listen.js",
-  "scripts": {
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
