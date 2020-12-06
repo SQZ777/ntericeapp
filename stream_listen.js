@@ -20,7 +20,7 @@ http.createServer(function (req, res) {
 
 setInterval(()=>{
     request_to_myself()
-},1000)
+},600000)
 
 client.on('ready', async () => {
     console.log(`Logged in as ${client.user.tag}!`);
