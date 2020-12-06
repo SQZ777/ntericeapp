@@ -6,6 +6,22 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 var channel_names = ['MorganTang', 'thisiceisfromtaiwan', 'hsiny0903', 'defponytail']
 
+
+const http = require('http'); // 1 - 載入 Node.js 原生模組 http
+const { request_to_myself } = require('./lib/request_myself')
+
+const PORT = process.env.PORT || 3000
+http.createServer(function (req, res) {
+    res.writeHead(200, {
+        'Content-Type': 'text/plain'
+    });
+    res.end('Hello World!');
+}).listen(PORT);
+
+setInterval(()=>{
+    request_to_myself()
+},600000)
+
 client.on('ready', async () => {
     console.log(`Logged in as ${client.user.tag}!`);
     setInterval(async () => {
