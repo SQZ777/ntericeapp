@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "stream_listen.js",
+  "scripts": {
+    "start": "node ./server.js"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

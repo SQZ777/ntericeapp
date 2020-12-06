@@ -1,21 +1,6 @@
 require('dotenv').config();
 const igotallday_service = require('./lib/igotallday_youtube');
 const twitch_lib = require('./lib/twitch_lib')
-
-// const http = require('http'); // 1 - 載入 Node.js 原生模組 http
-
-// const PORT = process.env.PORT || 3000
-// http.createServer(function (req, res) {
-//     res.writeHead(200, {
-//         'Content-Type': 'text/plain'
-//     });
-//     res.end('Hello World!');
-// }).listen(PORT);
-
-
-const {
-    request_to_myself
-} = require('./lib/request_myself')
 const streamer_services = require('./lib/streamer_services')
 const Discord = require('discord.js');
 const client = new Discord.Client();
@@ -74,10 +59,6 @@ function get_igotallday_embded(video) {
         .setImage(video.thumbnail.thumbnails[3].url)
         .setTimestamp()
 }
-
-setInterval(() => {
-    request_to_myself()
-}, 60000)
 
 client.on('message', async msg => {
     if (msg.content === 'ping') {
