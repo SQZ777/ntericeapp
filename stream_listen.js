@@ -2,15 +2,15 @@ require('dotenv').config();
 const igotallday_service = require('./lib/igotallday_youtube');
 const twitch_lib = require('./lib/twitch_lib')
 
-const http = require('http'); // 1 - 載入 Node.js 原生模組 http
+// const http = require('http'); // 1 - 載入 Node.js 原生模組 http
 
-const PORT = process.env.PORT || 3000
-http.createServer(function (req, res) {
-    res.writeHead(200, {
-        'Content-Type': 'text/plain'
-    });
-    res.end('Hello World!');
-}).listen(PORT);
+// const PORT = process.env.PORT || 3000
+// http.createServer(function (req, res) {
+//     res.writeHead(200, {
+//         'Content-Type': 'text/plain'
+//     });
+//     res.end('Hello World!');
+// }).listen(PORT);
 
 
 const {
