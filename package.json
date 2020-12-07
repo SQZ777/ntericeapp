@@ -4,7 +4,7 @@
   "description": "",
   "main": "stream_listen.js",
   "scripts": {
-    "start": "node ./stream_listen.js"
+    "start": "node ./server.js"
   },
   "keywords": [],
   "author": "",
