@@ -11,8 +11,8 @@ http.createServer(function (req, res) {
         })
         req.on('end', function() {
           console.log('Body: ' + body)
-          response.writeHead(200, {'Content-Type': 'text/html'})
-          response.end('post received' + body)
+          res.writeHead(200, {'Content-Type': 'text/plain'})
+          res.end('post received' + body)
         })
       }else{
         res.writeHead(200, {
