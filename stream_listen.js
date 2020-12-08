@@ -5,6 +5,7 @@ const streamer_repository = require('./lib/streamer_repository');
 const Discord = require('discord.js');
 const client = new Discord.Client();
 var channel_names = ['MorganTang', 'thisiceisfromtaiwan', 'hsiny0903', 'defponytail'];
+const test = require('./test.js')
 const {
     request_to_myself
 } = require('./lib/request_myself')
@@ -61,6 +62,9 @@ client.on('message', async msg => {
             user = await twitch_lib.get_user(streamer_channel.user_id);
             client.channels.cache.get("776035789108543528").send(get_streamer_embded(streamer_channel, user));
         }
+        console.log('going to test')
+        test.go(client)
+        console.log('test done')
     }
 });
 
