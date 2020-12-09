@@ -3,7 +3,7 @@ const {
   Discord,
   Client,
 } = require('discord.js');
-const igotalldayService = require('./lib/igotalldayYoutube');
+const igotalldayService = require('./lib/igotalldayYoutubeService');
 const twitchLib = require('./lib/twitchLib');
 const streamerRepository = require('./lib/streamerRepository');
 const {
