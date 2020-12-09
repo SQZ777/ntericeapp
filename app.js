@@ -64,7 +64,7 @@ Client.on('ready', async () => {
       }
     });
 
-    await igotalldayService.run(Client);
+    // await igotalldayService.run(Client);
   }, 15000);
 });
 
