@@ -5,7 +5,7 @@ const {
 } = require('discord.js');
 const igotalldayService = require('./lib/igotalldayYoutube');
 const twitchLib = require('./lib/twitch_lib');
-const streamerRepository = require('./lib/streamer_repository');
+const streamerRepository = require('./lib/streamerRepository');
 const {
   requestToMyself,
 } = require('./lib/requestMyself');
