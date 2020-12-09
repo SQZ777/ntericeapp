@@ -1,16 +1,17 @@
 require('dotenv').config();
-const {
-  Discord,
-  Client,
-} = require('discord.js');
+const Discord = require('discord.js');
+const Client = new Discord.Client();
 const igotalldayService = require('./lib/igotalldayYoutubeService');
 const twitchLib = require('./lib/twitchLib');
 const streamerRepository = require('./lib/streamerRepository');
-const {
-  requestToMyself,
-} = require('./lib/requestMyself');
+const { requestToMyself } = require('./lib/requestMyself');
 
-const channelNames = ['MorganTang', 'thisiceisfromtaiwan', 'hsiny0903', 'defponytail'];
+const channelNames = [
+  'MorganTang',
+  'thisiceisfromtaiwan',
+  'hsiny0903',
+  'defponytail',
+];
 
 setInterval(() => {
   requestToMyself();
@@ -21,10 +22,18 @@ function getStreamerEmbded(streamerChannel, user) {
     .setColor('#0099ff')
     .setTitle(streamerChannel.title)
     .setURL(`https://www.twitch.tv/${user.login}`)
-    .setAuthor(user.display_name, user.profile_image_url, `https://www.twitch.tv/${user.login}`)
+    .setAuthor(
+      user.display_name,
+      user.profile_image_url,
+      `https://www.twitch.tv/${user.login}`
+    )
     .setThumbnail(user.profile_image_url)
     .addField('Game', streamerChannel.game_name, true)
-    .setImage(streamerChannel.thumbnail_url.replace('{width}', 480).replace('{height}', 240))
+    .setImage(
+      streamerChannel.thumbnail_url
+        .replace('{width}', 480)
+        .replace('{height}', 240)
+    )
     .setTimestamp();
 }
 
@@ -36,14 +45,22 @@ Client.on('ready', async () => {
       const channelStatusResp = await twitchLib.get_channel_status(channel);
       if (streamer.status === 'close' && channelStatusResp !== undefined) {
         const twitchUser = await twitchLib.get_user(channelStatusResp.user_id);
-        const diffTimeNow = Math.abs(new Date() - streamer.close_time) / 1000 / 60;
+        const diffTimeNow =
+          Math.abs(new Date() - streamer.close_time) / 1000 / 60;
         await streamerRepository.update_streamer_status(streamer.name, 'open');
         if (diffTimeNow >= 60) {
-          await Client.channels.cache.get('775907977101180938').send(`HI ALL!!! ${streamer.name} 開台啦!`);
-          await Client.channels.cache.get('775907977101180938').send(getStreamerEmbded(channelStatusResp, twitchUser));
+          await Client.channels.cache
+            .get('775907977101180938')
+            .send(`HI ALL!!! ${streamer.name} 開台啦!`);
+          await Client.channels.cache
+            .get('775907977101180938')
+            .send(getStreamerEmbded(channelStatusResp, twitchUser));
           await streamerRepository.update_streamer_notify_time(channel);
         }
-      } else if (streamer.status === 'open' && channelStatusResp === undefined) {
+      } else if (
+        streamer.status === 'open' &&
+        channelStatusResp === undefined
+      ) {
         await streamerRepository.update_streamer_status(streamer.name, 'close');
         await streamerRepository.update_streamer_close_time(channel);
       }
@@ -56,10 +73,14 @@ Client.on('ready', async () => {
 Client.on('message', async (msg) => {
   if (msg.content === 'ping') {
     msg.reply('pong pong');
-    const streamerChannel = await twitchLib.get_channel_status('attackfromtaiwan');
+    const streamerChannel = await twitchLib.get_channel_status(
+      'attackfromtaiwan'
+    );
     if (streamerChannel !== undefined) {
       const user = await twitchLib.get_user(streamerChannel.user_id);
-      Client.channels.cache.get('776035789108543528').send(getStreamerEmbded(streamerChannel, user));
+      Client.channels.cache
+        .get('776035789108543528')
+        .send(getStreamerEmbded(streamerChannel, user));
     }
   }
 });
