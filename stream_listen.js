@@ -8,7 +8,7 @@ const twitchLib = require('./lib/twitch_lib');
 const streamerRepository = require('./lib/streamer_repository');
 const {
   requestToMyself,
-} = require('./lib/request_myself');
+} = require('./lib/requestMyself');
 
 const channelNames = ['MorganTang', 'thisiceisfromtaiwan', 'hsiny0903', 'defponytail'];
 
