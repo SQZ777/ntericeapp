@@ -8,7 +8,6 @@ const { requestToMyself } = require('./lib/requestMyself');
 
 const channelNames = [
   'MorganTang',
-  'thisiceisfromtaiwan',
   'hsiny0903',
   'defponytail',
 ];
