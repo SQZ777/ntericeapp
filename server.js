@@ -1,4 +1,5 @@
 const express = require('express');
+const { MongoDbBase } = require('./lib/mongodbBase');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -10,7 +11,13 @@ app.post('/', (req, res) => {
   res.send(req.body); // echo the result back
 });
 
-app.post('/streamer_notify', (req, res) => {
+app.post('/streamer_notify', async (req, res) => {
+  const testCollection = new MongoDbBase('test');
+  await testCollection.connectMongo();
+  await testCollection.updateData(
+    { id: 1 },
+    { $set: { context: req.body.user_name } },
+  );
   res.send(req.body.user_name);
 });
 
