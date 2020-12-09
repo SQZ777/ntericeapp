@@ -3,7 +3,7 @@ const {
   Discord,
   Client,
 } = require('discord.js');
-const igotalldayService = require('./lib/igotalldayYoutube');
+const igotalldayService = require('./lib/igotalldayYoutubeService');
 const twitchLib = require('./lib/twitchLib');
 const streamerRepository = require('./lib/streamerRepository');
 const {
@@ -49,10 +49,7 @@ Client.on('ready', async () => {
       }
     });
 
-    const newVideoV2 = await igotalldayService.get_latest_video_v2();
-    if (newVideoV2 !== null) {
-      Client.channels.cache.get('775905509374558208').send(newVideoV2);
-    }
+    await igotalldayService.run(Client);
   }, 15000);
 });
 
