@@ -1,5 +1,6 @@
 require('dotenv').config();
 const Discord = require('discord.js');
+
 const Client = new Discord.Client();
 const igotalldayService = require('./lib/igotalldayYoutubeService');
 const twitchLib = require('./lib/twitchLib');
@@ -8,7 +9,6 @@ const { requestToMyself } = require('./lib/requestMyself');
 
 const channelNames = [
   'MorganTang',
-  'thisiceisfromtaiwan',
   'hsiny0903',
   'defponytail',
 ];
@@ -25,14 +25,14 @@ function getStreamerEmbded(streamerChannel, user) {
     .setAuthor(
       user.display_name,
       user.profile_image_url,
-      `https://www.twitch.tv/${user.login}`
+      `https://www.twitch.tv/${user.login}`,
     )
     .setThumbnail(user.profile_image_url)
     .addField('Game', streamerChannel.game_name, true)
     .setImage(
       streamerChannel.thumbnail_url
         .replace('{width}', 480)
-        .replace('{height}', 240)
+        .replace('{height}', 240),
     )
     .setTimestamp();
 }
@@ -41,13 +41,12 @@ Client.on('ready', async () => {
   console.log(`Logged in as ${Client.user.tag}!`);
   setInterval(async () => {
     channelNames.forEach(async (channel) => {
-      const streamer = await streamerRepository.get_streamer(channel);
-      const channelStatusResp = await twitchLib.get_channel_status(channel);
+      const streamer = await streamerRepository.getStreamer(channel);
+      const channelStatusResp = await twitchLib.getChannelStatus(channel);
       if (streamer.status === 'close' && channelStatusResp !== undefined) {
-        const twitchUser = await twitchLib.get_user(channelStatusResp.user_id);
-        const diffTimeNow =
-          Math.abs(new Date() - streamer.close_time) / 1000 / 60;
-        await streamerRepository.update_streamer_status(streamer.name, 'open');
+        const twitchUser = await twitchLib.getUser(channelStatusResp.user_id);
+        const diffTimeNow = Math.abs(new Date() - streamer.close_time) / 1000 / 60;
+        await streamerRepository.updateStreamerStatus(streamer.name, 'open');
         if (diffTimeNow >= 60) {
           await Client.channels.cache
             .get('775907977101180938')
@@ -55,14 +54,13 @@ Client.on('ready', async () => {
           await Client.channels.cache
             .get('775907977101180938')
             .send(getStreamerEmbded(channelStatusResp, twitchUser));
-          await streamerRepository.update_streamer_notify_time(channel);
+          await streamerRepository.updateStreamerNotifyTime(channel);
         }
       } else if (
-        streamer.status === 'open' &&
-        channelStatusResp === undefined
+        streamer.status === 'open' && channelStatusResp === undefined
       ) {
-        await streamerRepository.update_streamer_status(streamer.name, 'close');
-        await streamerRepository.update_streamer_close_time(channel);
+        await streamerRepository.updateStreamerStatus(streamer.name, 'close');
+        await streamerRepository.updateStreamerCloseTime(channel);
       }
     });
 
@@ -73,11 +71,11 @@ Client.on('ready', async () => {
 Client.on('message', async (msg) => {
   if (msg.content === 'ping') {
     msg.reply('pong pong');
-    const streamerChannel = await twitchLib.get_channel_status(
-      'attackfromtaiwan'
+    const streamerChannel = await twitchLib.getChannelStatus(
+      'attackfromtaiwan',
     );
     if (streamerChannel !== undefined) {
-      const user = await twitchLib.get_user(streamerChannel.user_id);
+      const user = await twitchLib.getUser(streamerChannel.user_id);
       Client.channels.cache
         .get('776035789108543528')
         .send(getStreamerEmbded(streamerChannel, user));
