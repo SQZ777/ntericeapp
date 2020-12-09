@@ -49,10 +49,7 @@ Client.on('ready', async () => {
       }
     });
 
-    const newVideoV2 = await igotalldayService.get_latest_video_v2();
-    if (newVideoV2 !== null) {
-      Client.channels.cache.get('775905509374558208').send(newVideoV2);
-    }
+    await igotalldayService.run(Client);
   }, 15000);
 });
 
