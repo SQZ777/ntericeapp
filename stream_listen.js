@@ -1,67 +1,70 @@
 require('dotenv').config();
-const igotallday_service = require('./lib/igotallday_youtube');
-const twitch_lib = require('./lib/twitch_lib');
-const streamer_repository = require('./lib/streamer_repository');
-const Discord = require('discord.js');
-const client = new Discord.Client();
-var channel_names = ['MorganTang', 'thisiceisfromtaiwan', 'hsiny0903', 'defponytail'];
 const {
-    request_to_myself
-} = require('./lib/request_myself')
+  Discord,
+  Client,
+} = require('discord.js');
+const igotalldayService = require('./lib/igotalldayYoutube');
+const twitchLib = require('./lib/twitchLib');
+const streamerRepository = require('./lib/streamerRepository');
+const {
+  requestToMyself,
+} = require('./lib/requestMyself');
+
+const channelNames = ['MorganTang', 'thisiceisfromtaiwan', 'hsiny0903', 'defponytail'];
 
 setInterval(() => {
-    request_to_myself()
-}, 600000)
+  requestToMyself();
+}, 600000);
 
-client.on('ready', async () => {
-    console.log(`Logged in as ${client.user.tag}!`);
-    setInterval(async () => {
-        channel_names.forEach(async channel => {
-            let streamer = await streamer_repository.get_streamer(channel);
-            let channel_status_resp = await twitch_lib.get_channel_status(channel);
-            if (streamer.status == 'close' && channel_status_resp !== undefined) {
-                let twitch_user = await twitch_lib.get_user(channel_status_resp.user_id);
-                let diff_time_now = Math.abs(new Date - streamer.close_time) / 1000 / 60;
-                await streamer_repository.update_streamer_status(streamer.name, 'open');
-                if (diff_time_now >= 60) {
-                    await client.channels.cache.get("775907977101180938").send(`HI ALL!!! ${streamer.name} 開台啦!`);
-                    await client.channels.cache.get("775907977101180938").send(get_streamer_embded(channel_status_resp, twitch_user));
-                    await streamer_repository.update_streamer_notify_time(channel);
-                }
-            } else if (streamer.status == 'open' && channel_status_resp === undefined) {
-                await streamer_repository.update_streamer_status(streamer.name, 'close');
-                await streamer_repository.update_streamer_close_time(channel);
-            }
-        })
-
-        let new_video_v2 = await igotallday_service.get_latest_video_v2();
-        if (new_video_v2 !== null) {
-            client.channels.cache.get("775905509374558208").send(new_video_v2);
-        }
-    }, 15000);
-});
-
-function get_streamer_embded(streamer_channel, user) {
-    return new Discord.MessageEmbed()
-        .setColor('#0099ff')
-        .setTitle(streamer_channel.title)
-        .setURL(`https://www.twitch.tv/${user.login}`)
-        .setAuthor(user.display_name, user.profile_image_url, `https://www.twitch.tv/${user.login}`)
-        .setThumbnail(user.profile_image_url)
-        .addField('Game', streamer_channel.game_name, true)
-        .setImage(streamer_channel.thumbnail_url.replace("{width}", 480).replace("{height}", 240))
-        .setTimestamp()
+function getStreamerEmbded(streamerChannel, user) {
+  return new Discord.MessageEmbed()
+    .setColor('#0099ff')
+    .setTitle(streamerChannel.title)
+    .setURL(`https://www.twitch.tv/${user.login}`)
+    .setAuthor(user.display_name, user.profile_image_url, `https://www.twitch.tv/${user.login}`)
+    .setThumbnail(user.profile_image_url)
+    .addField('Game', streamerChannel.game_name, true)
+    .setImage(streamerChannel.thumbnail_url.replace('{width}', 480).replace('{height}', 240))
+    .setTimestamp();
 }
 
-client.on('message', async msg => {
-    if (msg.content === 'ping') {
-        msg.reply('pong pong');
-        streamer_channel = await twitch_lib.get_channel_status('attackfromtaiwan')
-        if (streamer_channel !== undefined) {
-            user = await twitch_lib.get_user(streamer_channel.user_id);
-            client.channels.cache.get("776035789108543528").send(get_streamer_embded(streamer_channel, user));
+Client.on('ready', async () => {
+  console.log(`Logged in as ${Client.user.tag}!`);
+  setInterval(async () => {
+    channelNames.forEach(async (channel) => {
+      const streamer = await streamerRepository.get_streamer(channel);
+      const channelStatusResp = await twitchLib.get_channel_status(channel);
+      if (streamer.status === 'close' && channelStatusResp !== undefined) {
+        const twitchUser = await twitchLib.get_user(channelStatusResp.user_id);
+        const diffTimeNow = Math.abs(new Date() - streamer.close_time) / 1000 / 60;
+        await streamerRepository.update_streamer_status(streamer.name, 'open');
+        if (diffTimeNow >= 60) {
+          await Client.channels.cache.get('775907977101180938').send(`HI ALL!!! ${streamer.name} 開台啦!`);
+          await Client.channels.cache.get('775907977101180938').send(getStreamerEmbded(channelStatusResp, twitchUser));
+          await streamerRepository.update_streamer_notify_time(channel);
         }
+      } else if (streamer.status === 'open' && channelStatusResp === undefined) {
+        await streamerRepository.update_streamer_status(streamer.name, 'close');
+        await streamerRepository.update_streamer_close_time(channel);
+      }
+    });
+
+    const newVideoV2 = await igotalldayService.get_latest_video_v2();
+    if (newVideoV2 !== null) {
+      Client.channels.cache.get('775905509374558208').send(newVideoV2);
     }
+  }, 15000);
 });
 
-client.login(process.env.discordToken);
+Client.on('message', async (msg) => {
+  if (msg.content === 'ping') {
+    msg.reply('pong pong');
+    const streamerChannel = await twitchLib.get_channel_status('attackfromtaiwan');
+    if (streamerChannel !== undefined) {
+      const user = await twitchLib.get_user(streamerChannel.user_id);
+      Client.channels.cache.get('776035789108543528').send(getStreamerEmbded(streamerChannel, user));
+    }
+  }
+});
+
+Client.login(process.env.discordToken);
