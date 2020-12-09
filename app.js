@@ -25,14 +25,14 @@ function getStreamerEmbded(streamerChannel, user) {
     .setAuthor(
       user.display_name,
       user.profile_image_url,
-      `https://www.twitch.tv/${user.login}`
+      `https://www.twitch.tv/${user.login}`,
     )
     .setThumbnail(user.profile_image_url)
     .addField('Game', streamerChannel.game_name, true)
     .setImage(
       streamerChannel.thumbnail_url
         .replace('{width}', 480)
-        .replace('{height}', 240)
+        .replace('{height}', 240),
     )
     .setTimestamp();
 }
@@ -45,8 +45,7 @@ Client.on('ready', async () => {
       const channelStatusResp = await twitchLib.get_channel_status(channel);
       if (streamer.status === 'close' && channelStatusResp !== undefined) {
         const twitchUser = await twitchLib.get_user(channelStatusResp.user_id);
-        const diffTimeNow =
-          Math.abs(new Date() - streamer.close_time) / 1000 / 60;
+        const diffTimeNow = Math.abs(new Date() - streamer.close_time) / 1000 / 60;
         await streamerRepository.update_streamer_status(streamer.name, 'open');
         if (diffTimeNow >= 60) {
           await Client.channels.cache
@@ -58,8 +57,7 @@ Client.on('ready', async () => {
           await streamerRepository.update_streamer_notify_time(channel);
         }
       } else if (
-        streamer.status === 'open' &&
-        channelStatusResp === undefined
+        streamer.status === 'open' && channelStatusResp === undefined
       ) {
         await streamerRepository.update_streamer_status(streamer.name, 'close');
         await streamerRepository.update_streamer_close_time(channel);
@@ -74,7 +72,7 @@ Client.on('message', async (msg) => {
   if (msg.content === 'ping') {
     msg.reply('pong pong');
     const streamerChannel = await twitchLib.get_channel_status(
-      'attackfromtaiwan'
+      'attackfromtaiwan',
     );
     if (streamerChannel !== undefined) {
       const user = await twitchLib.get_user(streamerChannel.user_id);
