@@ -22,7 +22,7 @@ Client.on('ready', async () => {
   setInterval(async () => {
     await streamerService.run(Client, streamerCollection);
     await igotalldayService.run(Client);
-  }, 3000);
+  }, 15000);
 });
 
 Client.on('message', async (msg) => {
