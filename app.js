@@ -1,5 +1,10 @@
+const express = require('express');
+
+const app = express();
+const PORT = process.env.PORT || 3000;
 require('dotenv').config();
 const Discord = require('discord.js');
+const { MongoDbBase } = require('./lib/mongodbBase');
 
 const Client = new Discord.Client();
 const igotalldayService = require('./lib/igotalldayYoutubeService');
@@ -7,11 +12,7 @@ const twitchLib = require('./lib/twitchLib');
 const streamerRepository = require('./lib/streamerRepository');
 const { requestToMyself } = require('./lib/requestMyself');
 
-const channelNames = [
-  'MorganTang',
-  'hsiny0903',
-  'defponytail',
-];
+const channelNames = ['MorganTang', 'hsiny0903', 'defponytail'];
 
 setInterval(() => {
   requestToMyself();
@@ -45,7 +46,7 @@ Client.on('ready', async () => {
       const channelStatusResp = await twitchLib.getChannelStatus(channel);
       if (streamer.status === 'close' && channelStatusResp !== undefined) {
         const twitchUser = await twitchLib.getUser(channelStatusResp.user_id);
-        const diffTimeNow = Math.abs(new Date() - streamer.close_time) / 1000 / 60;
+        const diffTimeNow = Math.abs(new Date() - streamer.close_time) / 60000;
         await streamerRepository.updateStreamerStatus(streamer.name, 'open');
         if (diffTimeNow >= 60) {
           await Client.channels.cache
@@ -56,15 +57,13 @@ Client.on('ready', async () => {
             .send(getStreamerEmbded(channelStatusResp, twitchUser));
           await streamerRepository.updateStreamerNotifyTime(channel);
         }
-      } else if (
-        streamer.status === 'open' && channelStatusResp === undefined
-      ) {
+      } else if (streamer.status === 'open' && !channelStatusResp) {
         await streamerRepository.updateStreamerStatus(streamer.name, 'close');
         await streamerRepository.updateStreamerCloseTime(channel);
       }
     });
 
-    // await igotalldayService.run(Client);
+    await igotalldayService.run(Client);
   }, 15000);
 });
 
@@ -84,3 +83,24 @@ Client.on('message', async (msg) => {
 });
 
 Client.login(process.env.discordToken);
+
+app.use(express.json());
+
+app.post('/', (req, res) => {
+  console.log(req.body); // your JSON
+  res.send(req.body); // echo the result back
+});
+
+app.post('/streamer_notify', async (req, res) => {
+  const testCollection = new MongoDbBase('test');
+  await testCollection.connectMongo();
+  await testCollection.updateData(
+    { id: 1 },
+    { $set: { context: req.body.data[0].user_name } },
+  );
+  res.send(req.body.user_name);
+});
+
+app.listen(PORT, () => {
+  console.log('Example app listening on port 3000!');
+});
