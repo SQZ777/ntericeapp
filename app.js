@@ -19,9 +19,13 @@ Client.on('ready', async () => {
   console.log(`Logged in as ${Client.user.tag}!`);
   const streamerCollection = new MongoDbBase('streamers');
   await streamerCollection.connectMongo();
+  const igotalldayCollection = new MongoDbBase('igotallday');
+  await igotalldayCollection.connectMongo();
+  // TODO: this will make multiple connection per collection.
+  // need to improve this.
   setInterval(async () => {
     await streamerService.run(Client, streamerCollection);
-    await igotalldayService.run(Client);
+    await igotalldayService.run(Client, igotalldayCollection);
   }, 15000);
 });
 
