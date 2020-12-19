@@ -24,12 +24,13 @@ async function connectToMongodb() {
     console.log(`something went wrong: ${err}`);
     throw err;
   });
+  console.log('connect success.');
   return client;
 }
 
 Client.on('ready', async () => {
   console.log(`Logged in as ${Client.user.tag}!`);
-  const client = connectToMongodb();
+  const client = await connectToMongodb();
   const streamerCollection = new MongoDbBase(client, 'streamers');
   const igotalldayCollection = new MongoDbBase(client, 'igotallday');
   setInterval(async () => {
