@@ -4,6 +4,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 require('dotenv').config();
 const Discord = require('discord.js');
+const { MongoClient } = require('mongodb');
 const { MongoDbBase } = require('./lib/mongodbBase');
 
 const Client = new Discord.Client();
@@ -15,14 +16,22 @@ setInterval(() => {
   requestToMyself();
 }, 600000);
 
+async function connectToMongodb() {
+  const client = await MongoClient.connect(process.env.mongoHost, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }).catch((err) => {
+    console.log(`something went wrong: ${err}`);
+    throw err;
+  });
+  return client;
+}
+
 Client.on('ready', async () => {
   console.log(`Logged in as ${Client.user.tag}!`);
-  const streamerCollection = new MongoDbBase('streamers');
-  await streamerCollection.connectMongo();
-  const igotalldayCollection = new MongoDbBase('igotallday');
-  await igotalldayCollection.connectMongo();
-  // TODO: this will make multiple connection per collection.
-  // need to improve this.
+  const client = connectToMongodb();
+  const streamerCollection = new MongoDbBase(client, 'streamers');
+  const igotalldayCollection = new MongoDbBase(client, 'igotallday');
   setInterval(async () => {
     await streamerService.run(Client, streamerCollection);
     await igotalldayService.run(Client, igotalldayCollection);
@@ -40,7 +49,9 @@ Client.login(process.env.discordToken);
 app.use(express.json());
 
 app.post('/streamer_notify', async (req, res) => {
-  Client.channels.cache.get('776035789108543528').send('有人打我!! streamer_notify');
+  Client.channels.cache
+    .get('776035789108543528')
+    .send('有人打我!! streamer_notify');
   const testCollection = new MongoDbBase('test');
   await testCollection.connectMongo();
   await testCollection.updateData(
