@@ -10,6 +10,7 @@ const { MongoDbBase } = require('./lib/mongodbBase');
 const Client = new Discord.Client();
 const igotalldayService = require('./lib/igotalldayYoutubeService');
 const streamerService = require('./lib/streamerService');
+const apexSearchService = require('./lib/apexSearchService');
 const { requestToMyself } = require('./lib/requestMyself');
 
 setInterval(() => {
@@ -42,6 +43,19 @@ Client.on('ready', async () => {
 Client.on('message', async (msg) => {
   if (msg.content === 'ping') {
     msg.reply('pong pong');
+  }
+  const msgContent = msg.content;
+  const msgArray = msgContent.split(' ');
+  if (msgArray.length === 3 && msgArray[0].toLowerCase() === '/apex') {
+    const playerStatusMsg = await apexSearchService.getApexPlayerStatus(
+      msgArray[1],
+      msgArray[2],
+    );
+    msg.reply(playerStatusMsg);
+  } else if (msgArray[0] === '/apex') {
+    msg.reply(
+      '輸入格式為 /apex {查詢的平台} {玩家名稱}，請重新再試，玩家名稱不可為空格，查詢平台有 pc XBOX PSN',
+    );
   }
 });
 
