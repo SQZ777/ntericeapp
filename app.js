@@ -44,22 +44,7 @@ Client.on('message', async (msg) => {
   if (msg.content === 'ping') {
     msg.reply('pong pong');
   }
-  const msgContent = msg.content;
-  const command = msgContent.slice(0, 5).toLowerCase();
-  const indexOf2ndSpace = msgContent.indexOf(' ', 6);
-  const platform = msgContent.slice(6, indexOf2ndSpace);
-  const playerName = msgContent.slice(indexOf2ndSpace + 1, msgContent.length);
-  if (command === '/apex' && platform && playerName) {
-    const playerStatusMsg = await apexSearchService.getApexPlayerStatus(
-      platform,
-      playerName,
-    );
-    msg.reply(playerStatusMsg);
-  } else if (command === '/apex') {
-    msg.reply(
-      '輸入格式為 /apex {查詢的平台} {玩家名稱}，請重新再試，查詢平台有 pc xbox psn',
-    );
-  }
+  await apexSearchService.run(msg);
 });
 
 Client.login(process.env.discordToken);
