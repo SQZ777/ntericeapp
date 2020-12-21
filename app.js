@@ -52,7 +52,7 @@ Client.on('message', async (msg) => {
       msgArray[2],
     );
     msg.reply(playerStatusMsg);
-  } else if (msgArray[0] === '/apex') {
+  } else if (msgArray[0].toLowerCase() === '/apex') {
     msg.reply(
       '輸入格式為 /apex {查詢的平台} {玩家名稱}，請重新再試，玩家名稱不可為空格，查詢平台有 pc XBOX PSN',
     );
