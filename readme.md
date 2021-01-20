@@ -32,3 +32,8 @@ TRNApiKey=
 ## TODO
 
 - refresh twitch accesstoken machanism
+- set /apex command default platform is PC
+- add emoji for /apex command, click this emoji should delete the response message.
+- set /apex command for personal
+  - ex: /@my_discord_name then response this person's apex rank status
+    - before this, should add /apex register command
