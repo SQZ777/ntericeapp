@@ -51,19 +51,6 @@ Client.login(process.env.discordToken);
 
 app.use(express.json());
 
-app.post('/streamer_notify', async (req, res) => {
-  Client.channels.cache
-    .get('776035789108543528')
-    .send('有人打我!! streamer_notify');
-  const testCollection = new MongoDbBase('test');
-  await testCollection.connectMongo();
-  await testCollection.updateData(
-    { id: 1 },
-    { $set: { context: req.body.data[0].user_name } },
-  );
-  res.send(req.body.user_name);
-});
-
 app.listen(PORT, () => {
   console.log('Example app listening on port 3000!');
 });
