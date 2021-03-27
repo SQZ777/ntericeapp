@@ -52,6 +52,11 @@ Client.login(process.env.discordToken);
 
 app.use(express.json());
 
+app.post('/Twitch/CallBack', (req, res) => {
+  res.send('hello?');
+  console.log('this request is from twitch');
+});
+
 app.listen(PORT, () => {
   console.log('Example app listening on port 3000!');
 });
