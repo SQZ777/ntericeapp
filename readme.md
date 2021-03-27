@@ -14,8 +14,6 @@ the .env key value should provide:
 
 ```
 discordToken=
-twitchAuthorization=
-twitchClientId=
 mongoHost=
 TRNApiKey=
 ```
@@ -28,6 +26,7 @@ TRNApiKey=
   - format: /apex {platform} {playerName}
   - format example: /apex pc iceonfire
   - support platform: pc, xbox, psn
+- If you need to refresh token, you need to update MongoDB's data
 
 ## TODO
 
