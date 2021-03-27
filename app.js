@@ -57,6 +57,10 @@ app.post('/Twitch/CallBack', (req, res) => {
   console.log('this request is from twitch');
 });
 
+app.get('/', (req, res) => {
+  res.send(req);
+});
+
 app.listen(PORT, () => {
   console.log('Example app listening on port 3000!');
 });
