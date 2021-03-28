@@ -32,11 +32,8 @@ async function connectToMongodb() {
 Client.on('ready', async () => {
   console.log(`Logged in as ${Client.user.tag}!`);
   const client = await connectToMongodb();
-  const streamerCollection = new MongoDbBase(client, 'streamers');
-  const twitchCollection = new MongoDbBase(client, 'twitch');
   const igotalldayCollection = new MongoDbBase(client, 'igotallday');
   setInterval(async () => {
-    await streamerService.run(Client, streamerCollection, twitchCollection);
     await igotalldayService.run(Client, igotalldayCollection);
   }, 15000);
 });
