@@ -32,11 +32,8 @@ async function connectToMongodb() {
 Client.on('ready', async () => {
   console.log(`Logged in as ${Client.user.tag}!`);
   const client = await connectToMongodb();
-  const streamerCollection = new MongoDbBase(client, 'streamers');
-  const twitchCollection = new MongoDbBase(client, 'twitch');
   const igotalldayCollection = new MongoDbBase(client, 'igotallday');
   setInterval(async () => {
-    await streamerService.run(Client, streamerCollection, twitchCollection);
     await igotalldayService.run(Client, igotalldayCollection);
   }, 15000);
 });
@@ -60,7 +57,7 @@ app.post('/Twitch/CallBack', async (req, res) => {
     const streamerLoginName = req.body.event.broadcaster_user_login;
     const streamerName = req.body.event.broadcaster_user_name;
     Client.channels.cache
-      .get('776035789108543528')
+      .get('775907977101180938')
       .send(`HI ALL!!! ${streamerName} 開台啦!\n https://www.twitch.tv/${streamerLoginName}`);
   }
   res.send(req.body);
