@@ -9,7 +9,6 @@ const { MongoDbBase } = require('./lib/mongodbBase');
 
 const Client = new Discord.Client();
 const igotalldayService = require('./lib/igotalldayYoutubeService');
-const streamerService = require('./lib/streamerService');
 const apexSearchService = require('./lib/apexSearchService');
 const { requestToMyself } = require('./lib/requestMyself');
 
@@ -60,9 +59,12 @@ app.post('/Twitch/CallBack', async (req, res) => {
       .get('775907977101180938')
       .send(`HI ALL!!! ${streamerName} 開台啦!\n https://www.twitch.tv/${streamerLoginName}`);
   }
-  res.send(req.body);
   console.log(req.body);
-  console.log('this request is from twitch');
+  console.log(req.header('twitch-eventsub-message-signature'));
+  console.log(req.header('Twitch-Eventsub-Message-Id'));
+  console.log(req.header('Twitch-Eventsub-Message-Timestamp'));
+
+  res.send(req.body);
 });
 
 app.get('/', (req, res) => {
