@@ -53,7 +53,7 @@ Client.login(process.env.discordToken);
 app.use(express.json());
 
 app.post('/Twitch/CallBack', (req, res) => {
-  res.send('hello?');
+  res.send(req.body.challenge);
   console.log('this request is from twitch');
 });
 
