@@ -63,7 +63,7 @@ app.post('/Twitch/CallBack', async (req, res) => {
       .get('776035789108543528')
       .send(`HI ALL!!! ${streamerName} 開台啦!\n https://www.twitch.tv/${streamerLoginName}`);
   }
-  res.send(req);
+  res.send(req.body);
   console.log('this request is from twitch');
 });
 
