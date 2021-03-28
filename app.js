@@ -52,8 +52,18 @@ Client.login(process.env.discordToken);
 
 app.use(express.json());
 
-app.post('/Twitch/CallBack', (req, res) => {
-  res.send(req.body.challenge);
+app.post('/Twitch/CallBack', async (req, res) => {
+  if (req.body.challenge) {
+    res.send(req.body.challenge);
+  }
+  if (req.body.event) {
+    const streamerLoginName = req.body.event.broadcaster_user_login;
+    const streamerName = req.body.event.broadcaster_user_name;
+    Client.channels.cache
+      .get('776035789108543528')
+      .send(`HI ALL!!! ${streamerName} 開台啦!\n https://www.twitch.tv/${streamerLoginName}`);
+  }
+  res.send(req);
   console.log('this request is from twitch');
 });
 
