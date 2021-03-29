@@ -7,10 +7,12 @@ require('dotenv').config();
 const Discord = require('discord.js');
 const { MongoClient } = require('mongodb');
 const { MongoDbBase } = require('./lib/mongodbBase');
+const { StreamerRepository } = require('./lib/streamerRepository');
 
 const Client = new Discord.Client();
 const igotalldayService = require('./lib/igotalldayYoutubeService');
 const apexSearchService = require('./lib/apexSearchService');
+const streamerServiceV2 = require('./lib/streamerLiveTimeService');
 const { requestToMyself } = require('./lib/requestMyself');
 
 setInterval(() => {
@@ -74,11 +76,17 @@ app.post('/Twitch/CallBack', async (req, res) => {
     if (req.body.event) {
       const streamerLoginName = req.body.event.broadcaster_user_login;
       const streamerName = req.body.event.broadcaster_user_name;
-      Client.channels.cache
-        .get('775907977101180938')
-        .send(
-          `HI ALL!!! ${streamerName} 開台啦!\n https://www.twitch.tv/${streamerLoginName}`,
-        );
+      const client = await connectToMongodb();
+      const streamerCollection = new MongoDbBase(client, 'streamers');
+      const streamerRepository = new StreamerRepository(streamerCollection);
+      if (await streamerServiceV2.Run(streamerRepository, streamerName.toLowerCase())) {
+        Client.channels.cache
+          .get('775907977101180938')
+          .send(
+            `HI ALL!!! ${streamerName} 開台啦!\n https://www.twitch.tv/${streamerLoginName}`,
+          );
+      }
+      client.close();
     }
     const validMessage = 'this signature is valid';
     console.log(validMessage);
