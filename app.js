@@ -80,9 +80,10 @@ app.post('/Twitch/CallBack', async (req, res) => {
           `HI ALL!!! ${streamerName} 開台啦!\n https://www.twitch.tv/${streamerLoginName}`,
         );
     }
-  } else {
-    res.send(req.body);
+    const validMessage = 'this signature is valid';
+    console.log(validMessage);
   }
+  res.send(req.body);
   console.log(req.header('twitch-eventsub-message-signature'));
   console.log(req.header('Twitch-Eventsub-Message-Id'));
   console.log(req.header('Twitch-Eventsub-Message-Timestamp'));
