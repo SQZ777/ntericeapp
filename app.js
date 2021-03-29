@@ -1,4 +1,5 @@
 const express = require('express');
+const crypto = require('crypto');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -46,29 +47,49 @@ Client.on('message', async (msg) => {
 
 Client.login(process.env.discordToken);
 
+function SignatureIsValid(req) {
+  const id = req.headers['twitch-eventsub-message-id'];
+  const timestamp = req.headers['twitch-eventsub-message-timestamp'];
+  const signature = req.headers['twitch-eventsub-message-signature'].split('=');
+
+  const buf = Buffer.from(JSON.stringify(req.body));
+  const calculatedSignature = crypto
+    .createHmac(
+      signature[0],
+      `${req.body.event.broadcaster_user_id}${process.env.twitchSubscribeSecret}`,
+    )
+    .update(id + timestamp + buf)
+    .digest('hex');
+  const twitchSignature = signature[1];
+  return calculatedSignature === twitchSignature;
+}
+
 app.use(express.json());
 
 app.post('/Twitch/CallBack', async (req, res) => {
-  if (req.body.challenge) {
-    res.send(req.body.challenge);
+  if (SignatureIsValid(req)) {
+    if (req.body.challenge) {
+      res.send(req.body.challenge);
+    }
+    if (req.body.event) {
+      const streamerLoginName = req.body.event.broadcaster_user_login;
+      const streamerName = req.body.event.broadcaster_user_name;
+      Client.channels.cache
+        .get('775907977101180938')
+        .send(
+          `HI ALL!!! ${streamerName} 開台啦!\n https://www.twitch.tv/${streamerLoginName}`,
+        );
+    }
+  } else {
+    res.send(req.body);
   }
-  if (req.body.event) {
-    const streamerLoginName = req.body.event.broadcaster_user_login;
-    const streamerName = req.body.event.broadcaster_user_name;
-    Client.channels.cache
-      .get('775907977101180938')
-      .send(`HI ALL!!! ${streamerName} 開台啦!\n https://www.twitch.tv/${streamerLoginName}`);
-  }
-  console.log(req.body);
   console.log(req.header('twitch-eventsub-message-signature'));
   console.log(req.header('Twitch-Eventsub-Message-Id'));
   console.log(req.header('Twitch-Eventsub-Message-Timestamp'));
-
-  res.send(req.body);
 });
 
 app.get('/', (req, res) => {
-  res.send(req);
+  res.send(req.body);
 });
 
 app.listen(PORT, () => {
