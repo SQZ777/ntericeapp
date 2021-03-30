@@ -79,7 +79,7 @@ app.post('/Twitch/CallBack', async (req, res) => {
     }
     return;
   }
-  if (SignatureIsValid(req, req.event.broadcaster_user_id)) {
+  if (SignatureIsValid(req, req.body.event.broadcaster_user_id)) {
     if (req.body.event) {
       const streamerLoginName = req.body.event.broadcaster_user_login;
       const streamerName = req.body.event.broadcaster_user_name;
