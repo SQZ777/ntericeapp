@@ -69,6 +69,10 @@ function SignatureIsValid(req, broadcasterUserId) {
 app.use(express.json());
 
 app.post('/Twitch/CallBack', async (req, res) => {
+  console.log(req.body);
+  console.log(req.header('twitch-eventsub-message-signature'));
+  console.log(req.header('Twitch-Eventsub-Message-Id'));
+  console.log(req.header('Twitch-Eventsub-Message-Timestamp'));
   if (req.body.challenge) {
     if (SignatureIsValid(req, req.body.subscription.condition.broadcaster_user_id)) {
       res.send(req.body.challenge);
@@ -95,10 +99,6 @@ app.post('/Twitch/CallBack', async (req, res) => {
     console.log(validMessage);
   }
   res.send(req.body);
-  console.log(req.body);
-  console.log(req.header('twitch-eventsub-message-signature'));
-  console.log(req.header('Twitch-Eventsub-Message-Id'));
-  console.log(req.header('Twitch-Eventsub-Message-Timestamp'));
 });
 
 app.get('/', (req, res) => {
