@@ -86,7 +86,7 @@ app.post('/Twitch/CallBack', async (req, res) => {
       const client = await connectToMongodb();
       const streamerCollection = new MongoDbBase(client, 'streamers');
       const streamerRepository = new StreamerRepository(streamerCollection);
-      if (await streamerServiceV2.Run(streamerRepository, streamerName.toLowerCase())) {
+      if (await streamerServiceV2.Run(streamerRepository, streamerLoginName.toLowerCase())) {
         Client.channels.cache
           .get('775907977101180938')
           .send(
