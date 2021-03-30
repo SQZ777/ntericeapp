@@ -92,6 +92,7 @@ app.post('/Twitch/CallBack', async (req, res) => {
     console.log(validMessage);
   }
   res.send(req.body);
+  console.log(req.body);
   console.log(req.header('twitch-eventsub-message-signature'));
   console.log(req.header('Twitch-Eventsub-Message-Id'));
   console.log(req.header('Twitch-Eventsub-Message-Timestamp'));
