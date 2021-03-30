@@ -49,7 +49,7 @@ Client.on('message', async (msg) => {
 
 Client.login(process.env.discordToken);
 
-function SignatureIsValid(req) {
+function SignatureIsValid(req, broadcasterUserId) {
   const id = req.headers['twitch-eventsub-message-id'];
   const timestamp = req.headers['twitch-eventsub-message-timestamp'];
   const signature = req.headers['twitch-eventsub-message-signature'].split('=');
@@ -58,7 +58,7 @@ function SignatureIsValid(req) {
   const calculatedSignature = crypto
     .createHmac(
       signature[0],
-      `${req.body.event.broadcaster_user_id}${process.env.twitchSubscribeSecret}`,
+      `${broadcasterUserId}${process.env.twitchSubscribeSecret}`,
     )
     .update(id + timestamp + buf)
     .digest('hex');
@@ -69,10 +69,13 @@ function SignatureIsValid(req) {
 app.use(express.json());
 
 app.post('/Twitch/CallBack', async (req, res) => {
-  if (SignatureIsValid(req)) {
-    if (req.body.challenge) {
+  if (req.body.challenge) {
+    if (SignatureIsValid(req, req.body.subscription.condition.broadcaster_user_id)) {
       res.send(req.body.challenge);
     }
+    return;
+  }
+  if (SignatureIsValid(req)) {
     if (req.body.event) {
       const streamerLoginName = req.body.event.broadcaster_user_login;
       const streamerName = req.body.event.broadcaster_user_name;
