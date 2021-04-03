@@ -44,6 +44,9 @@ Client.on('message', async (msg) => {
   if (msg.content === 'ping') {
     msg.reply('pong pong');
   }
+  if (msg.content.includes('上香')) {
+    msg.channel.send('\\\\|/');
+  }
   await apexSearchService.run(msg);
 });
 
