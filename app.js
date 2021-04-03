@@ -82,11 +82,12 @@ app.post('/Twitch/CallBack', async (req, res) => {
   if (SignatureIsValid(req, req.body.event.broadcaster_user_id)) {
     if (req.body.event) {
       const streamerLoginName = req.body.event.broadcaster_user_login;
+      const streamerId = req.body.event.broadcaster_user_id;
       const streamerName = req.body.event.broadcaster_user_name;
       const client = await connectToMongodb();
       const streamerCollection = new MongoDbBase(client, 'streamers');
       const streamerRepository = new StreamerRepository(streamerCollection);
-      if (await streamerServiceV2.Run(streamerRepository, streamerLoginName.toLowerCase())) {
+      if (await streamerServiceV2.RunById(streamerRepository, streamerId)) {
         Client.channels.cache
           .get('775907977101180938')
           .send(
