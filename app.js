@@ -77,9 +77,7 @@ app.post('/Twitch/CallBack', async (req, res) => {
   console.log(req.header('Twitch-Eventsub-Message-Id'));
   console.log(req.header('Twitch-Eventsub-Message-Timestamp'));
   if (req.body.challenge) {
-    if (
-      SignatureIsValid(req, req.body.subscription.condition.broadcaster_user_id)
-    ) {
+    if (SignatureIsValid(req, req.body.subscription.condition.broadcaster_user_id)) {
       res.send(req.body.challenge);
     }
     return;
