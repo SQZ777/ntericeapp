@@ -11,7 +11,7 @@ const { StreamerRepository } = require('./lib/streamer/streamerRepository');
 
 const Client = new Discord.Client();
 const igotalldayService = require('./lib/igotalldayYoutubeService');
-const apexSearchService = require('./lib/apexSearchService');
+const apexSearchService = require('./lib/APEX/apexSearchService');
 const streamerServiceV2 = require('./lib/streamer/streamerLiveTimeService');
 const { requestToMyself } = require('./lib/requestMyself');
 
