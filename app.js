@@ -49,7 +49,7 @@ Client.on('message', async (msg) => {
 
 Client.login(process.env.discordToken);
 
-function SignatureIsValid(req) {
+function SignatureIsValid(req, broadcasterUserId) {
   const id = req.headers['twitch-eventsub-message-id'];
   const timestamp = req.headers['twitch-eventsub-message-timestamp'];
   const signature = req.headers['twitch-eventsub-message-signature'].split('=');
@@ -58,7 +58,7 @@ function SignatureIsValid(req) {
   const calculatedSignature = crypto
     .createHmac(
       signature[0],
-      `${req.body.event.broadcaster_user_id}${process.env.twitchSubscribeSecret}`,
+      `${broadcasterUserId}${process.env.twitchSubscribeSecret}`,
     )
     .update(id + timestamp + buf)
     .digest('hex');
@@ -69,17 +69,24 @@ function SignatureIsValid(req) {
 app.use(express.json());
 
 app.post('/Twitch/CallBack', async (req, res) => {
-  if (SignatureIsValid(req)) {
-    if (req.body.challenge) {
+  console.log(req.body);
+  console.log(req.header('twitch-eventsub-message-signature'));
+  console.log(req.header('Twitch-Eventsub-Message-Id'));
+  console.log(req.header('Twitch-Eventsub-Message-Timestamp'));
+  if (req.body.challenge) {
+    if (SignatureIsValid(req, req.body.subscription.condition.broadcaster_user_id)) {
       res.send(req.body.challenge);
     }
+    return;
+  }
+  if (SignatureIsValid(req, req.body.event.broadcaster_user_id)) {
     if (req.body.event) {
       const streamerLoginName = req.body.event.broadcaster_user_login;
       const streamerName = req.body.event.broadcaster_user_name;
       const client = await connectToMongodb();
       const streamerCollection = new MongoDbBase(client, 'streamers');
       const streamerRepository = new StreamerRepository(streamerCollection);
-      if (await streamerServiceV2.Run(streamerRepository, streamerName.toLowerCase())) {
+      if (await streamerServiceV2.Run(streamerRepository, streamerLoginName.toLowerCase())) {
         Client.channels.cache
           .get('775907977101180938')
           .send(
@@ -92,9 +99,6 @@ app.post('/Twitch/CallBack', async (req, res) => {
     console.log(validMessage);
   }
   res.send(req.body);
-  console.log(req.header('twitch-eventsub-message-signature'));
-  console.log(req.header('Twitch-Eventsub-Message-Id'));
-  console.log(req.header('Twitch-Eventsub-Message-Timestamp'));
 });
 
 app.get('/', (req, res) => {
