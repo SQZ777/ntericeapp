@@ -12,7 +12,7 @@ const { StreamerRepository } = require('./lib/streamer/streamerRepository');
 const Client = new Discord.Client();
 const igotalldayService = require('./lib/igotallday/igotalldayYoutubeService');
 const apexSearchService = require('./lib/APEX/apexSearchService');
-const streamerServiceV2 = require('./lib/streamer/streamerLiveTimeService');
+const streamerLiveTimeService = require('./lib/streamer/streamerLiveTimeService');
 const { requestToMyself } = require('./lib/requestMyself');
 
 setInterval(() => {
@@ -90,7 +90,7 @@ app.post('/Twitch/CallBack', async (req, res) => {
       const client = await connectToMongodb();
       const streamerCollection = new MongoDbBase(client, 'streamers');
       const streamerRepository = new StreamerRepository(streamerCollection);
-      if (await streamerServiceV2.RunById(streamerRepository, streamerId)) {
+      if (await streamerLiveTimeService.RunById(streamerRepository, streamerId)) {
         Client.channels.cache
           .get('775907977101180938')
           .send(
