@@ -29,6 +29,7 @@ TRNApiKey=
   - format example: /apex pc iceonfire
   - support platform: pc, xbox, psn
 - If you need to refresh token, you need to update MongoDB's data
+- When your message cotains "上香", the bot will send \|/ to your channel
 
 ## TODO
 
