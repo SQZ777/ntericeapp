@@ -15,6 +15,8 @@ const apexSearchService = require('./lib/APEX/apexSearchService');
 const streamerLiveTimeService = require('./lib/streamer/streamerLiveTimeService');
 const { requestToMyself } = require('./lib/requestMyself');
 
+const robotId = '775930753069744130';
+
 setInterval(() => {
   requestToMyself();
 }, 600000);
@@ -42,12 +44,45 @@ Client.on('ready', async () => {
 
 Client.on('message', async (msg) => {
   if (msg.content === 'ping') {
-    msg.reply('pong pong');
+    msg.reply('pong');
   }
   if (msg.content.includes('上香')) {
     msg.channel.send('\\\\|/');
   }
+  if (msg.author.id === robotId) {
+    if (
+      msg.content.includes('輸入格式為') || msg.content.includes('找不到') || msg.content.includes('的分數是')
+    ) {
+      msg.react('💩');
+    }
+  }
   await apexSearchService.run(msg);
+});
+
+Client.on('messageReactionAdd', async (reaction, user) => {
+  // When we receive a reaction we check if the reaction is partial or not
+  if (reaction.partial) {
+    // If the message this reaction belongs to was removed the fetching
+    // might result in an API error, which we need to handle
+    try {
+      await reaction.fetch();
+    } catch (error) {
+      console.error('Something went wrong when fetching the message: ', error);
+      // Return as `reaction.message.author` may be undefined/null
+      return;
+    }
+  }
+  if (reaction.message.content.includes(user.id) && reaction.emoji.name === '💩') {
+    reaction.message.delete();
+  }
+  // Now the message has been cached and is fully available
+  console.log(
+    `${reaction.message.author}'s message "${reaction.message.content}" gained a reaction!`,
+  );
+  // The reaction is now also fully available and the properties will be reflected accurately:
+  console.log(
+    `${reaction.count} user(s) have given the same reaction to this message!`,
+  );
 });
 
 Client.login(process.env.discordToken);
@@ -77,7 +112,9 @@ app.post('/Twitch/CallBack', async (req, res) => {
   console.log(req.header('Twitch-Eventsub-Message-Id'));
   console.log(req.header('Twitch-Eventsub-Message-Timestamp'));
   if (req.body.challenge) {
-    if (SignatureIsValid(req, req.body.subscription.condition.broadcaster_user_id)) {
+    if (
+      SignatureIsValid(req, req.body.subscription.condition.broadcaster_user_id)
+    ) {
       res.send(req.body.challenge);
     }
     return;
@@ -90,7 +127,9 @@ app.post('/Twitch/CallBack', async (req, res) => {
       const client = await connectToMongodb();
       const streamerCollection = new MongoDbBase(client, 'streamers');
       const streamerRepository = new StreamerRepository(streamerCollection);
-      if (await streamerLiveTimeService.RunById(streamerRepository, streamerId)) {
+      if (
+        await streamerLiveTimeService.RunById(streamerRepository, streamerId)
+      ) {
         Client.channels.cache
           .get('775907977101180938')
           .send(
