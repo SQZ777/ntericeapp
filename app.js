@@ -21,6 +21,23 @@ setInterval(() => {
   requestToMyself();
 }, 600000);
 
+function SignatureIsValid(req, broadcasterUserId) {
+  const id = req.headers['twitch-eventsub-message-id'];
+  const timestamp = req.headers['twitch-eventsub-message-timestamp'];
+  const signature = req.headers['twitch-eventsub-message-signature'].split('=');
+
+  const buf = Buffer.from(JSON.stringify(req.body));
+  const calculatedSignature = crypto
+    .createHmac(
+      signature[0],
+      `${broadcasterUserId}${process.env.twitchSubscribeSecret}`,
+    )
+    .update(id + timestamp + buf)
+    .digest('hex');
+  const twitchSignature = signature[1];
+  return calculatedSignature === twitchSignature;
+}
+
 async function connectToMongodb() {
   const client = await MongoClient.connect(process.env.mongoHost, {
     useNewUrlParser: true,
@@ -86,23 +103,6 @@ Client.on('messageReactionAdd', async (reaction, user) => {
 });
 
 Client.login(process.env.discordToken);
-
-function SignatureIsValid(req, broadcasterUserId) {
-  const id = req.headers['twitch-eventsub-message-id'];
-  const timestamp = req.headers['twitch-eventsub-message-timestamp'];
-  const signature = req.headers['twitch-eventsub-message-signature'].split('=');
-
-  const buf = Buffer.from(JSON.stringify(req.body));
-  const calculatedSignature = crypto
-    .createHmac(
-      signature[0],
-      `${broadcasterUserId}${process.env.twitchSubscribeSecret}`,
-    )
-    .update(id + timestamp + buf)
-    .digest('hex');
-  const twitchSignature = signature[1];
-  return calculatedSignature === twitchSignature;
-}
 
 app.use(express.json());
 
