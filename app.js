@@ -11,11 +11,9 @@ const { StreamerRepository } = require('./lib/streamer/streamerRepository');
 
 const Client = new Discord.Client();
 const igotalldayService = require('./lib/igotallday/igotalldayYoutubeService');
-const apexSearchService = require('./lib/APEX/apexSearchService');
 const streamerLiveTimeService = require('./lib/streamer/streamerLiveTimeService');
 const { requestToMyself } = require('./lib/requestMyself');
-
-const robotId = '775930753069744130';
+const { handleMessage } = require('./lib/discord/onMessage');
 
 setInterval(() => {
   requestToMyself();
@@ -60,20 +58,7 @@ Client.on('ready', async () => {
 });
 
 Client.on('message', async (msg) => {
-  if (msg.content === 'ping') {
-    msg.reply('pong');
-  }
-  if (msg.content.includes('上香')) {
-    msg.channel.send('\\\\|/');
-  }
-  if (msg.author.id === robotId) {
-    if (
-      msg.content.includes('輸入格式為') || msg.content.includes('找不到') || msg.content.includes('的分數是')
-    ) {
-      msg.react('💩');
-    }
-  }
-  await apexSearchService.run(msg);
+  handleMessage(msg);
 });
 
 Client.on('messageReactionAdd', async (reaction, user) => {
