@@ -58,7 +58,7 @@ Client.on('ready', async () => {
 });
 
 Client.on('message', async (msg) => {
-  handleMessage(msg);
+  await handleMessage(msg);
 });
 
 Client.on('messageReactionAdd', async (reaction, user) => {
