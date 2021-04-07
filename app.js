@@ -11,15 +11,30 @@ const { StreamerRepository } = require('./lib/streamer/streamerRepository');
 
 const Client = new Discord.Client();
 const igotalldayService = require('./lib/igotallday/igotalldayYoutubeService');
-const apexSearchService = require('./lib/APEX/apexSearchService');
 const streamerLiveTimeService = require('./lib/streamer/streamerLiveTimeService');
 const { requestToMyself } = require('./lib/requestMyself');
-
-const robotId = '775930753069744130';
+const { handleMessage } = require('./lib/discord/onMessage');
 
 setInterval(() => {
   requestToMyself();
 }, 600000);
+
+function SignatureIsValid(req, broadcasterUserId) {
+  const id = req.headers['twitch-eventsub-message-id'];
+  const timestamp = req.headers['twitch-eventsub-message-timestamp'];
+  const signature = req.headers['twitch-eventsub-message-signature'].split('=');
+
+  const buf = Buffer.from(JSON.stringify(req.body));
+  const calculatedSignature = crypto
+    .createHmac(
+      signature[0],
+      `${broadcasterUserId}${process.env.twitchSubscribeSecret}`,
+    )
+    .update(id + timestamp + buf)
+    .digest('hex');
+  const twitchSignature = signature[1];
+  return calculatedSignature === twitchSignature;
+}
 
 async function connectToMongodb() {
   const client = await MongoClient.connect(process.env.mongoHost, {
@@ -43,20 +58,7 @@ Client.on('ready', async () => {
 });
 
 Client.on('message', async (msg) => {
-  if (msg.content === 'ping') {
-    msg.reply('pong');
-  }
-  if (msg.content.includes('上香')) {
-    msg.channel.send('\\\\|/');
-  }
-  if (msg.author.id === robotId) {
-    if (
-      msg.content.includes('輸入格式為') || msg.content.includes('找不到') || msg.content.includes('的分數是')
-    ) {
-      msg.react('💩');
-    }
-  }
-  await apexSearchService.run(msg);
+  handleMessage(msg);
 });
 
 Client.on('messageReactionAdd', async (reaction, user) => {
@@ -86,23 +88,6 @@ Client.on('messageReactionAdd', async (reaction, user) => {
 });
 
 Client.login(process.env.discordToken);
-
-function SignatureIsValid(req, broadcasterUserId) {
-  const id = req.headers['twitch-eventsub-message-id'];
-  const timestamp = req.headers['twitch-eventsub-message-timestamp'];
-  const signature = req.headers['twitch-eventsub-message-signature'].split('=');
-
-  const buf = Buffer.from(JSON.stringify(req.body));
-  const calculatedSignature = crypto
-    .createHmac(
-      signature[0],
-      `${broadcasterUserId}${process.env.twitchSubscribeSecret}`,
-    )
-    .update(id + timestamp + buf)
-    .digest('hex');
-  const twitchSignature = signature[1];
-  return calculatedSignature === twitchSignature;
-}
 
 app.use(express.json());
 
