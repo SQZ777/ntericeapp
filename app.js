@@ -60,6 +60,7 @@ Client.on('ready', async () => {
 
 Client.on('message', async (msg) => {
   await handleMessage(msg);
+  console.log(msg.reference); // it can listen when message is reply
 });
 
 Client.on('messageReactionAdd', async (reaction, user) => {
