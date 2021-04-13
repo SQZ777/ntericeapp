@@ -25,7 +25,7 @@ TRNApiKey=
   - I registered twitch subscribe, and it will post request to me, then send notify to channel.
   - (deprecated) Notify when target Twitch streamers are streamming.(Polling)
 - Use /apex command to get the APEX player current rank score.
-  - format: /apex {platform} {playerName}
+  - format: /apex [platform] <playerName>
   - format example: /apex pc iceonfire
   - support platform: pc, xbox, psn
 - If you need to refresh token, you need to update MongoDB's data
