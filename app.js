@@ -58,9 +58,26 @@ Client.on('ready', async () => {
   }, 15000);
 });
 
+function getRandom(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 Client.on('message', async (msg) => {
   await handleMessage(msg);
-  // console.log(msg.reference); // it can listen when message is reply
+  const flatterMsgList = [
+    '太有料了ㄅ',
+    '6',
+    '猛ㄉ',
+    '太會了吧',
+    '狂',
+    '扯= =',
+    '很會',
+  ];
+  if (msg.reference) {
+    if (msg.content === '幫吹') {
+      msg.channel.send(flatterMsgList[getRandom(0, flatterMsgList.length - 1)]);
+    }
+  }
 });
 
 Client.on('messageReactionAdd', async (reaction, user) => {
