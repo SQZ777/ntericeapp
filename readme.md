@@ -15,7 +15,12 @@ the .env key value should provide:
 ```
 discordToken=
 mongoHost=
+PORT=
 TRNApiKey=
+twitchClientId=
+twitchClientSecret=
+twitchSubscribeSecret=
+APEXStatusApiKey=
 ```
 
 ## Support Services
