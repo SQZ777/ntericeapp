@@ -11,8 +11,9 @@ const { StreamerRepository } = require('./lib/streamer/streamerRepository');
 const { VoiceStateRecordRepository } = require('./lib/discord/voiceStateRecordRepository');
 
 const Client = new Discord.Client();
-const igotalldayService = require('./lib/igotallday/igotalldayYoutubeService');
+// const igotalldayService = require('./lib/igotallday/igotalldayYoutubeService');
 const streamerLiveTimeService = require('./lib/streamer/streamerLiveTimeService');
+// const blockMessageService = require('./lib/blockMessage/blockMessageService');
 const { requestToMyself } = require('./lib/requestMyself');
 const { handleMessage } = require('./lib/discord/onMessage');
 const { handleVoiceStateUpdate } = require('./lib/discord/voiceStateUpdate');
@@ -55,10 +56,12 @@ Client.on('ready', async () => {
   console.log(`Logged in as ${Client.user.tag}!`);
   const client = await connectToMongodb();
   mongodbConnetionFlag = true;
-  const igotalldayCollection = new MongoDbBase(client, 'igotallday');
+  // const igotalldayCollection = new MongoDbBase(client, 'igotallday');
   voiceStateRecordCollection = new MongoDbBase(client, 'voiceStateRecord');
+  // Client.channels.cache.get('497251144469577740').send('威~ 老闆休息了嗎 那我要一個一號餐加一個無骨雞腿排 泰式的 醬少一點');
+  // Client.channels.cache.get('497251144469577740').send('....');
   setInterval(async () => {
-    await igotalldayService.run(Client, igotalldayCollection);
+    // await igotalldayService.run(Client, igotalldayCollection);
   }, 15000);
 });
 
