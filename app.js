@@ -20,6 +20,7 @@ const { handleVoiceStateUpdate } = require('./lib/discord/voiceStateUpdate');
 const { handleReactionAdd } = require('./lib/discord/messageReactionAdd');
 
 let voiceStateRecordCollection;
+let voiceStateRecordRepository;
 let mongodbConnetionFlag = false;
 
 setInterval(() => {
@@ -60,6 +61,8 @@ Client.on('ready', async () => {
   voiceStateRecordCollection = new MongoDbBase(client, 'voiceStateRecord');
   // Client.channels.cache.get('497251144469577740').send('威~ 老闆休息了嗎 那我要一個一號餐加一個無骨雞腿排 泰式的 醬少一點');
   // Client.channels.cache.get('497251144469577740').send('....');
+  voiceStateRecordRepository = new VoiceStateRecordRepository(voiceStateRecordCollection);
+
   setInterval(async () => {
     // await igotalldayService.run(Client, igotalldayCollection);
   }, 15000);
@@ -70,7 +73,6 @@ function getRandom(min, max) {
 }
 
 Client.on('message', async (msg) => {
-  const voiceStateRecordRepository = new VoiceStateRecordRepository(voiceStateRecordCollection);
   await handleMessage(msg, voiceStateRecordRepository);
   const flatterMsgList = ['太有料了ㄅ', '6', '猛ㄉ', '太會了吧', '狂', '扯= =', '很會'];
   if (msg.reference) {
@@ -86,7 +88,7 @@ Client.on('messageReactionAdd', async (reaction, user) => {
 
 Client.on('voiceStateUpdate', async (oldState, newState) => {
   if (mongodbConnetionFlag) {
-    handleVoiceStateUpdate(voiceStateRecordCollection, oldState, newState);
+    handleVoiceStateUpdate(voiceStateRecordRepository, oldState, newState);
   }
 });
 
